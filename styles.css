@@ -84,6 +84,13 @@ a{ color:inherit; text-decoration:none; }
 .logo{
   font-size:15px; font-weight:600; letter-spacing:-0.01em; white-space:nowrap;
 }
+/* Role next to the name, so the logo reads as a person, not a company. */
+.logo-role{
+  font-weight:400; color:var(--ink-mute);
+  border-left:1px solid var(--line);
+  margin-left:9px; padding-left:9px;
+}
+@media (max-width:559px){ .logo-role{ display:none; } }
 
 .nav{ display:flex; align-items:center; gap:26px; }
 .nav a{
@@ -111,14 +118,6 @@ a{ color:inherit; text-decoration:none; }
 .btn-ghost:hover{ border-color:var(--ink); }
 
 .btn-small{ padding:10px 18px; font-size:13.5px; }
-
-/* Placeholder state: project not deployed yet — looks calm, is not clickable. */
-.btn-disabled{
-  border:1px dashed var(--line);
-  color:var(--ink-mute);
-  background:transparent;
-  cursor:default;
-}
 
 .actions{ display:flex; flex-wrap:wrap; gap:12px; }
 

@@ -16,14 +16,22 @@ Static site. No build step, no dependencies. Open `index.html` in a browser, or 
 
 Every spot to edit is marked with a `<!-- REPLACE: ... -->` comment in `index.html`.
 
-Already filled in: name **Volodya**, email **firegame2006@gmail.com**, Telegram **@WowCh_ok**.
-No phone number is used anywhere on the site.
+Already filled in: name **Volodya**, email **firegame2006@gmail.com**, Telegram **@WowCh_ok**,
+GitHub **github.com/firegame2006-dot**. No phone number is used anywhere on the site.
 
-1. **Project links** — each card has `Live Demo` and `GitHub` buttons plus the image link
-   (3 places per card); swap `href="#"` for the real URL.
-   Keep `target="_blank" rel="noopener noreferrer"`.
-2. **GitHub** — replace `github.com/username` in the Contact section.
-3. **Third project** — project 03 is commented out at the end of the projects grid.
+Projects wired up:
+
+| # | Project | Live | Repo |
+|---|---|---|---|
+| 01 | Velora Motors | https://carszero.netlify.app/ | https://github.com/firegame2006-dot/cars-zero |
+| 02 | Monarch Barbershop | https://barbershop0.netlify.app/ | https://github.com/firegame2006-dot/barber-shop-2 |
+
+Card screenshots are real captures of both sites (1600x1000 WebP, lazy-loaded).
+Re-capture them any time with headless Chrome:
+
+    chrome --headless=new --hide-scrollbars --window-size=1600,1000       --virtual-time-budget=9000 --screenshot=velora.png https://carszero.netlify.app/
+
+1. **Third project** — project 03 is commented out at the end of the projects grid.
    Delete the comment markers around it when a third site is ready
    (the desktop grid is 2 columns; change `repeat(2, 1fr)` to `repeat(3, 1fr)`
    in `styles.css` if you want three across).
