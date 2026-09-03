@@ -2,128 +2,89 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Volodya — Web Developer | Modern Websites for Businesses</title>
-<meta name="description" content="Volodya — freelance web developer building clean, responsive and conversion-focused websites for real businesses.">
-<meta name="theme-color" content="#faf9f7">
-<script>document.documentElement.className += " js";</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Volodya — Web Developer | 3D Portfolio</title>
+<meta name="description" content="Volodya — freelance web developer. Modern, responsive websites with clean code and strong visual design.">
+<meta name="theme-color" content="#05070a">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="styles.css">
 
-<!-- Open Graph (optional — replace URL and image later) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Sora:wght@200;300;400;500&display=swap">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="stylesheet" href="drops.css">
+
 <meta property="og:type" content="website">
 <meta property="og:title" content="Volodya — Web Developer">
-<meta property="og:description" content="Freelance web developer building clean, responsive and conversion-focused websites for real businesses.">
+<meta property="og:description" content="Modern, responsive websites with clean code and strong visual design.">
 </head>
-<body>
+<body class="is-loading">
 
-<a class="skip-link" href="#projects">Skip to content</a>
+<a class="skip-link" href="#about">Skip to content</a>
 
-<header class="site-header">
-  <div class="container header-inner">
-    <a class="logo" href="#top">Volodya <span class="logo-role">Web Developer</span></a>
-    <nav class="nav" aria-label="Main">
-      <a href="#projects">Projects</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
+<!-- Droplet field: one fixed canvas behind the whole page -->
+<canvas id="scene" aria-hidden="true"></canvas>
+<div class="labels" id="labels"></div>
+
+<!-- ============ LOADER ============ -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-mark">
+    <svg viewBox="0 0 24 32" width="26" height="34" aria-hidden="true">
+      <path d="M12 1C12 1 2 13.4 2 20a10 10 0 0 0 20 0C22 13.4 12 1 12 1Z" fill="none" stroke="currentColor" stroke-width="1.2"/>
+    </svg>
   </div>
-</header>
+  <div class="loader-bar"><i id="loaderBar"></i></div>
+  <p class="loader-text">LOADING <span id="loaderPct">0</span>%</p>
+</div>
 
-<main id="top">
+<!-- ============ CURSOR ============ -->
+<div class="cursor" id="cursor" aria-hidden="true"><i></i></div>
+
+<main>
 
   <!-- ============ HERO ============ -->
-  <section class="hero container">
-    <p class="eyebrow reveal">Web Developer</p>
-    <h1 class="reveal">I build modern websites for businesses.</h1>
-    <p class="lead reveal">Clean, responsive and conversion-focused websites designed for real businesses.</p>
-    <div class="actions reveal">
-      <a class="btn btn-primary" href="#projects">View Projects</a>
-      <a class="btn btn-ghost" href="#contact">Contact Me</a>
+  <section class="hero" id="home">
+    <div class="hero-copy">
+      <h1>My<br>Works</h1>
+      <p class="lead">Modern websites with clean, stylish code.</p>
     </div>
   </section>
 
-  <!-- ============ PROJECTS ============ -->
-  <section class="section container" id="projects">
-    <h2 class="section-title reveal">Selected Projects</h2>
+  <!-- ============ SERVICES ============ -->
+  <section class="section" id="services">
+    <header class="section-head"><h2>My services</h2></header>
+    <ul class="services-list">
+      <li>Landing Pages</li>
+      <li>Business Websites</li>
+      <li>Responsive Design</li>
+      <li>UI/UX Design</li>
+      <li>Website Redesign</li>
+      <li>Animations &amp; 3D</li>
+    </ul>
+    <p class="techline"><span>Tech stack</span>HTML · CSS · JavaScript · React · Three.js · Git</p>
+  </section>
 
-    <div class="projects">
-
-      <!-- ---------- Project 01 ---------- -->
-      <article class="card reveal">
-        <a class="card-media" href="https://carszero.netlify.app/" target="_blank" rel="noopener noreferrer" aria-label="Velora Motors live demo">
-          <img src="assets/velora-motors.webp" alt="Velora Motors website preview"
-               width="1600" height="1000" loading="lazy" decoding="async">
-        </a>
-        <div class="card-body">
-          <p class="card-index">01</p>
-          <h3 class="card-title"><a href="https://carszero.netlify.app/" target="_blank" rel="noopener noreferrer">Velora Motors</a></h3>
-          <p class="card-text">Car dealership website: catalogue, filters, service centre and admin panel.</p>
-          <ul class="tags">
-            <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Responsive</li>
-          </ul>
-          <div class="card-actions">
-            <a class="chip chip-solid" href="https://carszero.netlify.app/" target="_blank" rel="noopener noreferrer">Live Demo</a>
-            <a class="chip" href="https://github.com/firegame2006-dot/cars-zero" target="_blank" rel="noopener noreferrer">GitHub</a>
-          </div>
-        </div>
-      </article>
-
-      <!-- ---------- Project 02 ---------- -->
-      <article class="card reveal">
-        <a class="card-media" href="https://barbershop0.netlify.app/" target="_blank" rel="noopener noreferrer" aria-label="Monarch Barbershop live demo">
-          <img src="assets/monarch-barbershop.webp" alt="Monarch Barbershop website preview"
-               width="1600" height="1000" loading="lazy" decoding="async">
-        </a>
-        <div class="card-body">
-          <p class="card-index">02</p>
-          <h3 class="card-title"><a href="https://barbershop0.netlify.app/" target="_blank" rel="noopener noreferrer">Monarch Barbershop</a></h3>
-          <p class="card-text">Barbershop website: services, booking flow, gallery and shop.</p>
-          <ul class="tags">
-            <li>HTML</li><li>CSS</li><li>JavaScript</li><li>UI</li>
-          </ul>
-          <div class="card-actions">
-            <a class="chip chip-solid" href="https://barbershop0.netlify.app/" target="_blank" rel="noopener noreferrer">Live Demo</a>
-            <a class="chip" href="https://github.com/firegame2006-dot/barber-shop-2" target="_blank" rel="noopener noreferrer">GitHub</a>
-          </div>
-        </div>
-      </article>
-
-      <!-- ---------- Project 03 — uncomment when a third project is ready ----------
-      <article class="card reveal">
-        <a class="card-media" href="#" target="_blank" rel="noopener noreferrer" aria-label="Auto Service live demo">
-          <img src="assets/auto-service.svg" alt="Auto Service website preview"
-               width="1200" height="750" loading="lazy" decoding="async">
-        </a>
-        <div class="card-body">
-          <p class="card-index">03</p>
-          <h3 class="card-title">Auto Service</h3>
-          <p class="card-text">Services, contact information and appointment flow.</p>
-          <ul class="tags">
-            <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Forms</li>
-          </ul>
-          <div class="card-actions">
-            <a class="chip chip-solid" href="#" target="_blank" rel="noopener noreferrer">Live Demo</a>
-            <a class="chip" href="#" target="_blank" rel="noopener noreferrer">GitHub</a>
-          </div>
-        </div>
-      </article>
-      ---------- end Project 03 ---------- -->
-
-    </div>
+  <!-- Projects live inside the droplets. This list is built only when WebGL is
+       unavailable, so the work stays reachable on any device. -->
+  <section class="section" id="work" hidden>
+    <header class="section-head"><h2>Selected Work</h2></header>
+    <ul class="work-list" id="workList"></ul>
   </section>
 
   <!-- ============ ABOUT ============ -->
-  <section class="section container about" id="about">
-    <h2 class="section-title reveal">About Me</h2>
-    <p class="about-text reveal">I'm Volodya — a freelance web developer focused on building clean, modern and responsive websites for businesses.</p>
+  <section class="section" id="about">
+    <header class="section-head"><h2>About me</h2></header>
+    <p class="about-text">I'm Volodya — a freelance web developer. I build clean, modern and responsive
+      websites for businesses: solid code, careful typography and interfaces that feel considered.</p>
   </section>
 
   <!-- ============ CONTACT ============ -->
-  <section class="section container contact" id="contact">
-    <h2 class="contact-title reveal">Have a project in mind?</h2>
-    <p class="contact-sub reveal">Let's build something.</p>
-    <ul class="contact-links reveal">
+  <section class="section" id="contact">
+    <header class="section-head"><h2>Contact</h2></header>
+    <p class="contact-line">Have a project in mind?<br><span>Let's build something.</span></p>
+    <p class="contact-hint" id="contactHint">Tap a bubble.</p>
+    <ul class="contact-links" id="contactList">
       <li><span>Email</span><a href="mailto:firegame2006@gmail.com">firegame2006@gmail.com</a></li>
       <li><span>Telegram</span><a href="https://t.me/WowCh_ok" target="_blank" rel="noopener noreferrer">@WowCh_ok</a></li>
       <li><span>GitHub</span><a href="https://github.com/firegame2006-dot" target="_blank" rel="noopener noreferrer">github.com/firegame2006-dot</a></li>
@@ -132,13 +93,17 @@
 
 </main>
 
-<footer class="site-footer">
-  <div class="container footer-inner">
-    <p>© 2026 Volodya</p>
-    <p>Web Developer</p>
-  </div>
-</footer>
+<!-- ============ CINEMATIC TRANSITION ============ -->
+<div class="transition" id="transition" aria-hidden="true">
+  <div class="transition-flash" id="transitionFlash"></div>
+  <img class="transition-shot" id="transitionShot" alt="">
+</div>
 
-<script src="script.js" defer></script>
+<!-- Inlined screenshots are only needed when the page runs from disk;
+     over http the textures come straight from assets/ (200 KB lighter). -->
+<script>if (location.protocol === "file:") document.write('<script src="previews.js"><\/script>');</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="drops.js" defer></script>
 </body>
 </html>

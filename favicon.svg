@@ -1,4 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <rect width="64" height="64" rx="14" fill="#14140f"/>
-  <text x="32" y="43" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="30" font-weight="600" fill="#faf9f7">Y</text>
+  <rect width="64" height="64" rx="14" fill="#05070a"/>
+  <defs>
+    <radialGradient id="g" cx="38%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#eaf3ff"/>
+      <stop offset="55%" stop-color="#8dc0ff"/>
+      <stop offset="100%" stop-color="#2f6bb8"/>
+    </radialGradient>
+  </defs>
+  <path d="M32 10C32 10 16 30 16 40a16 16 0 0 0 32 0C48 30 32 10 32 10Z" fill="url(#g)"/>
+  <ellipse cx="26" cy="36" rx="4.5" ry="6" fill="#ffffff" opacity=".65"/>
 </svg>
