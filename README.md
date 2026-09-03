@@ -105,5 +105,10 @@ A reload always lands at the top: `history.scrollRestoration` is set to manual.
 * Rendering pauses when the tab is hidden.
 * Project droplets are only clickable while the hero is on screen.
 * Pixel ratio is capped (2 on desktop, 1.6 on touch) to keep it smooth.
+* Clicking a droplet: it squashes, bursts into particles, then swells out and
+  floods the screen with a drop mark and a filling line, and the URL opens in
+  the same tab. No screenshot is zoomed, so nothing gets cropped on a phone.
+* On a phone the hero puts the words first and the droplets underneath, and
+  the contact bubbles sit in their own row under the contact text.
 * `prefers-reduced-motion` turns off the float, the burst and the intro; a click
   then goes straight to the project URL.

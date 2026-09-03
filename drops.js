@@ -352,19 +352,32 @@ const contacts = [
     function atDoc(docY) { return -((docY - h / 2) / h) * vh * SCROLL_RATE; }
 
     var cxw = wide ? vw * 0.17 : 0;
-    var cyw = wide ? 0 : vh * 0.30;
+    var cyw = wide ? 0 : -vh * 0.19;   /* portrait: droplets below the copy */
     var ring = wide ? m * 0.31 : m * 0.185;
     var baseR = wide ? m * 0.128 : m * 0.098;
 
-    var contactEl = document.getElementById('contact');
-    var contactBase = atDoc(contactEl
-      ? contactEl.offsetTop + contactEl.offsetHeight * 0.5
-      : docH * 0.82);
+    function docTop(el) {
+      return el.getBoundingClientRect().top + (window.scrollY || 0);
+    }
 
-    /* contact bubbles: beside the copy on wide screens, under it on phones */
-    var slots = wide
-      ? [[0.14, 0.14], [0.31, -0.02], [0.20, -0.19]]
-      : [[-0.27, -0.20], [0.02, -0.34], [0.29, -0.17]];
+    var contactEl = document.getElementById('contact');
+    var hintEl2 = document.getElementById('contactHint');
+    var contactBase, slots;
+
+    if (wide) {
+      /* beside the copy */
+      contactBase = atDoc(contactEl
+        ? contactEl.offsetTop + contactEl.offsetHeight * 0.5
+        : docH * 0.82);
+      slots = [[0.14, 0.14], [0.31, -0.02], [0.20, -0.19]];
+    } else {
+      /* on a phone they belong under the text, in a clear row of their own */
+      var anchor = hintEl2
+        ? docTop(hintEl2) + hintEl2.offsetHeight + h * 0.20
+        : docH * 0.9;
+      contactBase = atDoc(anchor);
+      slots = [[-0.30, 0.05], [0.00, -0.06], [0.30, 0.05]];
+    }
 
     var pi = 0, ci = 0, bi = 0;
 
@@ -376,13 +389,17 @@ const contacts = [
         var a = -Math.PI / 6 + (pi / n) * Math.PI * 2;
         size = baseR * (1 + (pi % 2 ? -0.10 : 0.12));
         x = cxw + Math.cos(a) * ring * (n === 1 ? 0 : 1);
+        var pl = vw * 0.5 - size * 1.15;
+        x = Math.max(-pl, Math.min(pl, x));
         y = cyw + Math.sin(a) * ring * (wide ? 0.86 : 0.92);
         z = (pi % 3) * -0.35;
         pi++;
       } else if (d.kind === 'contact') {
         var sl = slots[ci % slots.length];
         size = baseR * (wide ? 0.60 : 0.52);
-        x = sl[0] * vw;
+        /* never let a bubble hang off the edge of a phone screen */
+        var limit = vw * 0.5 - size * 1.45;
+        x = Math.max(-limit, Math.min(limit, sl[0] * vw));
         y = contactBase + sl[1] * vh;
         z = -0.15;
         ci++;
@@ -444,7 +461,7 @@ const contacts = [
     return null;
   }
 
-  /* ---------------- Burst + cinematic transition ---------------- */
+  /* ---------------- Burst + transition ---------------- */
   var bursts = [];
 
   function launch(drop) {
@@ -466,48 +483,45 @@ const contacts = [
 
     if (drop.label) gsap.to(drop.label, { opacity: 0, duration: 0.2 });
 
-    if (drop.image) {
-      cinematic(drop, rect);
-      setTimeout(go, 1150);
-    } else {
-      flash();
-      setTimeout(go, 640);
-    }
+    veil(drop, rect);
+    setTimeout(go, drop.image ? 1150 : 900);
   }
 
-  /* contacts have no screenshot to zoom — just the burst and a pulse of light */
-  function flash() {
+  /* The first version zoomed the screenshot to fullscreen, which cropped badly
+     on a phone. Now the droplet itself swells out and floods the screen, with a
+     small drop mark and a filling line while the next page loads. */
+  function veil(drop, rect) {
     var wrap = document.getElementById('transition');
-    var f = document.getElementById('transitionFlash');
-    wrap.classList.add('is-on');
-    gsap.timeline()
-      .to(f, { opacity: 0.7, duration: 0.16, ease: 'power2.out' })
-      .to(f, { opacity: 0, duration: 0.45 });
-  }
-
-  function cinematic(drop, rect) {
-    var project = { image: drop.image, title: drop.title };
-    var wrap = document.getElementById('transition');
-    var shot = document.getElementById('transitionShot');
     var flash = document.getElementById('transitionFlash');
+    var sheet = document.getElementById('transitionVeil');
+    var mark = document.getElementById('transitionMark');
+    var name = document.getElementById('transitionName');
+    var bar = document.getElementById('transitionBar');
 
     wrap.classList.add('is-on');
-    shot.src = project.image;
-    shot.alt = project.title + ' preview';
+    name.textContent = drop.title;
 
-    gsap.set(shot, {
-      x: rect.x - rect.r, y: rect.y - rect.r,
+    var w = window.innerWidth, h = window.innerHeight;
+    var dx = Math.max(rect.x, w - rect.x);
+    var dy = Math.max(rect.y, h - rect.y);
+    var far = Math.sqrt(dx * dx + dy * dy);
+    var slow = drop.image ? 1 : 0.78;
+
+    gsap.set(sheet, {
+      left: rect.x - rect.r, top: rect.y - rect.r,
       width: rect.r * 2, height: rect.r * 2,
-      borderRadius: '50%', opacity: 0, scale: 0.9, filter: 'blur(6px)'
+      scale: 0.35, opacity: 0
     });
+    gsap.set(bar, { width: '0%' });
+    gsap.set(mark, { opacity: 0, y: 8 });
+
     gsap.timeline()
-      .to(shot, { opacity: 1, scale: 1, duration: 0.22, ease: 'power2.out' }, 0.12)
-      .to(flash, { opacity: 0.85, duration: 0.14, ease: 'power2.out' }, 0.1)
+      .to(flash, { opacity: 0.8, duration: 0.14, ease: 'power2.out' }, 0.06)
       .to(flash, { opacity: 0, duration: 0.5 }, '>')
-      .to(shot, {
-        x: 0, y: 0, width: window.innerWidth, height: window.innerHeight,
-        borderRadius: '0px', filter: 'blur(0px)', duration: 0.78, ease: 'expo.inOut'
-      }, 0.24);
+      .to(sheet, { opacity: 1, duration: 0.18 }, 0.10)
+      .to(sheet, { scale: (far / rect.r) * 1.12, duration: 0.78 * slow, ease: 'power2.inOut' }, 0.10)
+      .to(mark, { opacity: 1, y: 0, duration: 0.30 }, 0.42 * slow)
+      .to(bar, { width: '100%', duration: 0.62 * slow, ease: 'power1.inOut' }, 0.45 * slow);
   }
 
   function spawnBurst(drop) {

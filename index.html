@@ -93,10 +93,18 @@
 
 </main>
 
-<!-- ============ CINEMATIC TRANSITION ============ -->
+<!-- ============ TRANSITION ============ -->
 <div class="transition" id="transition" aria-hidden="true">
   <div class="transition-flash" id="transitionFlash"></div>
-  <img class="transition-shot" id="transitionShot" alt="">
+  <div class="transition-veil" id="transitionVeil"></div>
+  <div class="transition-mark" id="transitionMark">
+    <svg viewBox="0 0 24 32" width="30" height="40" aria-hidden="true">
+      <path d="M12 1C12 1 2 13.4 2 20a10 10 0 0 0 20 0C22 13.4 12 1 12 1Z"
+            fill="none" stroke="currentColor" stroke-width="1.2"/>
+    </svg>
+    <span class="transition-name" id="transitionName"></span>
+    <div class="transition-bar"><i id="transitionBar"></i></div>
+  </div>
 </div>
 
 <!-- Inlined screenshots are only needed when the page runs from disk;

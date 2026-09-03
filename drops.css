@@ -178,7 +178,9 @@ main{ position:relative; z-index:2; }
   color:#fff; text-shadow:0 2px 14px rgba(0,0,0,.8);
 }
 .label u{
+  position:absolute; top:100%; left:50%; transform:translateX(-50%);
   text-decoration:none; font-size:8.5px; letter-spacing:.24em; text-transform:uppercase;
+  white-space:nowrap;
   color:var(--accent); opacity:0; transition:opacity .3s var(--ease);
 }
 .label.is-hot u{ opacity:1; }
@@ -256,23 +258,41 @@ main{ position:relative; z-index:2; }
 }
 .contact-links a:hover{ border-color:var(--accent); color:var(--accent); }
 
-/* ---------------- Cinematic transition ---------------- */
+/* ---------------- Transition ---------------- */
 .transition{
   position:fixed; inset:0; z-index:140;
   pointer-events:none; visibility:hidden;
 }
 .transition.is-on{ visibility:visible; }
+
 .transition-flash{
   position:absolute; inset:0; opacity:0;
   background:radial-gradient(40% 40% at 50% 50%, rgba(190,220,255,.9), rgba(120,170,255,0) 70%);
 }
-.transition-shot{
+
+/* the droplet swells out of the bubble and floods the screen */
+.transition-veil{
   position:absolute; top:0; left:0;
-  width:100px; height:62px; object-fit:cover;
   border-radius:50%;
   opacity:0;
-  box-shadow:0 0 60px rgba(120,170,255,.35);
+  background:radial-gradient(circle at 38% 32%,
+    rgba(38,58,88,.98) 0%, rgba(10,16,26,.99) 55%, #05070a 100%);
+  box-shadow:0 0 90px rgba(127,182,255,.35), inset 0 0 60px rgba(127,182,255,.15);
 }
+
+.transition-mark{
+  position:absolute; left:50%; top:50%;
+  transform:translate(-50%,-50%);
+  display:flex; flex-direction:column; align-items:center; gap:16px;
+  color:var(--accent);
+  opacity:0;
+}
+.transition-name{
+  font-size:10px; font-weight:600; letter-spacing:.34em; text-transform:uppercase;
+  color:var(--ink-soft); white-space:nowrap;
+}
+.transition-bar{ width:120px; height:1px; background:rgba(255,255,255,.16); overflow:hidden; }
+.transition-bar i{ display:block; height:100%; width:0%; background:var(--accent); }
 
 /* ---------------- Reveal ---------------- */
 .js .reveal{ opacity:0; transform:translateY(18px); transition:opacity .8s var(--ease), transform .8s var(--ease); }
@@ -287,8 +307,11 @@ main{ position:relative; z-index:2; }
 
 @media (max-width:759px){
   :root{ --pad:20px; }
-  .hero{ padding-top:64px; padding-bottom:64px; align-items:flex-end; }
-  .hero-copy{ padding-bottom:6vh; }
+  /* phone: the words come first, the droplets float underneath them */
+  .hero{ padding-top:12vh; padding-bottom:64px; align-items:flex-start; }
+  .hero-copy{ padding-bottom:0; }
+  /* room under the contact text for the three bubbles */
+  .contact{ padding-bottom:clamp(300px, 42vh, 420px); }
   .hero h1{ font-size:clamp(2.7rem, 15vw, 4.4rem); }
   .lead{ max-width:26ch; margin-top:18px; }
   .services-list li{ padding:14px 0 14px 26px; }
