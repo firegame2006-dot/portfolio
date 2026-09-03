@@ -230,7 +230,11 @@ const contacts = [
   /* --- build droplets: projects, contacts, and beads for the field --- */
   var TINT_PROJECT = new THREE.Color(0x86bcff);   /* blue-white glass  */
   var TINT_CONTACT = new THREE.Color(0xc3adff);   /* violet, clearly a different family */
-  var SCROLL_RATE = 0.55;                          /* field drifts slower than the page */
+  /* Project and contact droplets are pinned to the page (rate 1), so they stay
+     in their own section and can never drift across another section's text.
+     Only the small beads keep a parallax, which is where the depth comes from. */
+  var RATE_PINNED = 1;
+  var RATE_BEAD = 0.55;
 
   var drops = [];
   var decor = coarse ? 7 : 11;
@@ -349,7 +353,7 @@ const contacts = [
     var docH = document.body.scrollHeight || h;
 
     /* world Y that puts a droplet on screen when a given page position is */
-    function atDoc(docY) { return -((docY - h / 2) / h) * vh * SCROLL_RATE; }
+    function atDoc(docY, rate) { return -((docY - h / 2) / h) * vh * rate; }
 
     var cxw = wide ? vw * 0.17 : 0;
     var cyw = wide ? 0 : -vh * 0.19;   /* portrait: droplets below the copy */
@@ -368,21 +372,23 @@ const contacts = [
       /* beside the copy */
       contactBase = atDoc(contactEl
         ? contactEl.offsetTop + contactEl.offsetHeight * 0.5
-        : docH * 0.82);
+        : docH * 0.82, RATE_PINNED);
       slots = [[0.14, 0.14], [0.31, -0.02], [0.20, -0.19]];
     } else {
       /* on a phone they belong under the text, in a clear row of their own */
       var anchor = hintEl2
-        ? docTop(hintEl2) + hintEl2.offsetHeight + h * 0.20
+        ? docTop(hintEl2) + hintEl2.offsetHeight + h * 0.24
         : docH * 0.9;
-      contactBase = atDoc(anchor);
-      slots = [[-0.30, 0.05], [0.00, -0.06], [0.30, 0.05]];
+      contactBase = atDoc(anchor, RATE_PINNED);
+      slots = [[-0.30, 0.05], [0.00, -0.07], [0.30, 0.05]];
     }
 
     var pi = 0, ci = 0, bi = 0;
 
     for (var i = 0; i < drops.length; i++) {
       var d = drops[i], size, x, y, z;
+
+      d.rate = d.kind === 'bead' ? RATE_BEAD : RATE_PINNED;
 
       if (d.kind === 'project') {
         var n = Math.max(1, projects.length);
@@ -406,8 +412,11 @@ const contacts = [
       } else {
         var depth = (bi + 0.5) / decor;
         size = baseR * (0.20 + (bi % 4) * 0.07);
-        x = (((bi * 0.61803) % 1) * 2 - 1) * vw * 0.42;
-        y = atDoc(depth * docH) + ((bi % 3) - 1) * vh * 0.15;
+        /* beads hug the edges so they never swim through a line of text */
+        var side = (bi % 2 ? 1 : -1);
+        var spread = 0.30 + ((bi * 0.37) % 1) * 0.14;
+        x = side * vw * spread;
+        y = atDoc(depth * docH, RATE_BEAD) + ((bi % 3) - 1) * vh * 0.15;
         z = -0.2 - (bi % 4) * 0.35;
         bi++;
       }
@@ -630,14 +639,14 @@ const contacts = [
 
     var t = clock.elapsedTime;
 
-    /* the field drifts with the page, slower than the content (parallax) */
+    /* one scroll unit in world space; each droplet takes its own share of it */
     var scrolled = (window.scrollY || document.documentElement.scrollTop || 0);
-    var scrollWorld = (scrolled / window.innerHeight) * view.h * SCROLL_RATE;
+    var scrollUnit = (scrolled / window.innerHeight) * view.h;
 
     parallax.x += (parallax.tx - parallax.x) * 0.045;
     parallax.y += (parallax.ty - parallax.y) * 0.045;
     world.position.x = parallax.x * 0.35;
-    world.position.y = parallax.y * 0.35 + scrollWorld;
+    world.position.y = parallax.y * 0.35;
 
     /* pointer in world units, on the plane the droplets live on */
     var pwx = pointer.x * view.w / 2 - world.position.x;
@@ -660,8 +669,11 @@ const contacts = [
       d.hover += (want - d.hover) * 0.12;
       d.mat.uniforms.uHover.value = d.hover;
 
+      /* where this droplet sits right now, after the page has scrolled */
+      var by = d.base.y + scrollUnit * d.rate;
+
       /* individual answer to the pointer: beads scatter, projects lean in */
-      var dx = d.base.x - pwx, dy = d.base.y - pwy;
+      var dx = d.base.x - pwx, dy = by - pwy;
       var dist = Math.sqrt(dx * dx + dy * dy) || 0.0001;
       var reach = d.url ? d.r * 3.4 : d.r * 5.0;
       if (dist < reach) {
@@ -676,7 +688,7 @@ const contacts = [
 
       d.mesh.position.set(
         d.base.x + d.off.x + Math.sin(t * d.speed * 0.7 + d.phase) * d.amp * 1.3,
-        d.base.y + d.off.y + Math.sin(t * d.speed + d.phase) * d.amp * 2.2,
+        by + d.off.y + Math.sin(t * d.speed + d.phase) * d.amp * 2.2,
         d.base.z
       );
       d.mesh.rotation.y = Math.sin(t * 0.16 + d.phase) * 0.35;
@@ -705,6 +717,10 @@ const contacts = [
 
   /* ---------------- Boot ---------------- */
   layout();
+  /* text metrics decide where the contact bubbles sit, so measure again once
+     the webfonts have actually landed */
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+  window.addEventListener('load', layout);
   window.addEventListener('resize', debounce(layout, 120));
   window.addEventListener('orientationchange', function () { setTimeout(layout, 250); });
   tick();
