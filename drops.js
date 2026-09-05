@@ -598,6 +598,55 @@ const contacts = [
     return { x: x, y: y, r: Math.max(28, Math.abs(ex - x)) };
   }
 
+  /* ---------------- Coming back to the page ---------------- */
+  /* A browser keeps the page alive in the back/forward cache, so pressing Back
+     used to restore it exactly as it was left: the transition still flooding
+     the screen and the droplet still burst. Put everything back instead. */
+  function clearTransition() {
+    busy = false;
+
+    var wrap = document.getElementById('transition');
+    if (wrap) wrap.classList.remove('is-on');
+
+    ['#transitionVeil', '#transitionFlash', '#transitionMark'].forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (!el) return;
+      gsap.killTweensOf(el);
+      gsap.set(el, { opacity: 0 });
+    });
+    var bar = document.getElementById('transitionBar');
+    if (bar) { gsap.killTweensOf(bar); gsap.set(bar, { width: '0%' }); }
+
+    for (var i = 0; i < drops.length; i++) {
+      var d = drops[i];
+      gsap.killTweensOf([d.mat.uniforms.uOpacity, d.mat.uniforms.uSquash,
+                         d.mesh.scale, d.glow.material]);
+      d.mat.uniforms.uSquash.value = 0;
+      d.mat.uniforms.uOpacity.value = d.url ? 1 : 0.9;
+      d.mesh.scale.setScalar(d.r);
+      d.glow.material.opacity = d.kind === 'contact' ? 0.42 : (d.url ? 0.30 : 0.16);
+      if (d.label) {
+        gsap.killTweensOf(d.label);
+        gsap.set(d.label, { clearProps: 'opacity' });
+        d.label.classList.add('is-in');
+      }
+    }
+
+    for (var b = bursts.length - 1; b >= 0; b--) {
+      world.remove(bursts[b].pts);
+      bursts[b].pts.geometry.dispose();
+      bursts[b].pts.material.dispose();
+      bursts.splice(b, 1);
+    }
+  }
+
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted || busy) clearTransition();
+  });
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && busy) clearTransition();
+  });
+
   /* ---------------- Intro ---------------- */
   function intro() {
     for (var i = 0; i < drops.length; i++) {
