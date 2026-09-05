@@ -17,12 +17,13 @@ MIME = {".webp": "image/webp", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
 
 entries = []
 for path in sorted(glob.glob(os.path.join(ROOT, "assets", "*"))):
+    name = os.path.basename(path)
     ext = os.path.splitext(path)[1].lower()
-    if ext not in MIME:
-        continue
+    if ext not in MIME or name.startswith("og-"):
+        continue  # og-* is the social card, never a droplet texture
     with open(path, "rb") as fh:
         b64 = base64.b64encode(fh.read()).decode("ascii")
-    key = "assets/" + os.path.basename(path)
+    key = "assets/" + name
     entries.append('  "%s":\n    "data:%s;base64,%s"' % (key, MIME[ext], b64))
 
 out = os.path.join(ROOT, "previews.js")

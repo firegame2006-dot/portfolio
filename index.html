@@ -7,25 +7,38 @@
 <meta name="description" content="Volodya — freelance web developer. Modern, responsive websites with clean code and strong visual design.">
 <meta name="theme-color" content="#05070a">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Sora:wght@200;300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=Sora:wght@300;400;600&display=swap">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="stylesheet" href="drops.css">
 
+<link rel="canonical" href="https://portfolions2.netlify.app/">
+
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Volodya — Web Developer">
+<meta property="og:url" content="https://portfolions2.netlify.app/">
 <meta property="og:title" content="Volodya — Web Developer">
 <meta property="og:description" content="Modern, responsive websites with clean code and strong visual design.">
+<meta property="og:image" content="https://portfolions2.netlify.app/assets/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="My Works — 3D droplets holding previews of two client websites">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Volodya — Web Developer">
+<meta name="twitter:description" content="Modern, responsive websites with clean code and strong visual design.">
+<meta name="twitter:image" content="https://portfolions2.netlify.app/assets/og-cover.jpg">
 </head>
 <body class="is-loading">
 
-<a class="skip-link" href="#about">Skip to content</a>
+<a class="skip-link" href="#main">Skip to content</a>
 
 <!-- Droplet field: one fixed canvas behind the whole page -->
 <canvas id="scene" aria-hidden="true"></canvas>
-<div class="labels" id="labels"></div>
+<nav class="labels" id="labels" aria-label="Projects and contacts"></nav>
 
 <!-- ============ LOADER ============ -->
 <div class="loader" id="loader" aria-hidden="true">
@@ -41,12 +54,12 @@
 <!-- ============ CURSOR ============ -->
 <div class="cursor" id="cursor" aria-hidden="true"><i></i></div>
 
-<main>
+<main id="main" tabindex="-1">
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="home">
     <div class="hero-copy">
-      <h1>My<br>Works</h1>
+      <h1><span>My</span> <span>Works</span></h1>
       <p class="lead">Modern websites with clean, stylish code.</p>
     </div>
   </section>
@@ -83,7 +96,7 @@
   <section class="section" id="contact">
     <header class="section-head"><h2>Contact</h2></header>
     <p class="contact-line">Have a project in mind?<br><span>Let's build something.</span></p>
-    <p class="contact-hint" id="contactHint">Tap a bubble.</p>
+    <p class="contact-hint" id="contactHint">Pick a bubble to reach me.</p>
     <ul class="contact-links" id="contactList">
       <li><span>Email</span><a href="mailto:firegame2006@gmail.com">firegame2006@gmail.com</a></li>
       <li><span>Telegram</span><a href="https://t.me/WowCh_ok" target="_blank" rel="noopener noreferrer">@WowCh_ok</a></li>
@@ -110,8 +123,12 @@
 <!-- Inlined screenshots are only needed when the page runs from disk;
      over http the textures come straight from assets/ (200 KB lighter). -->
 <script>if (location.protocol === "file:") document.write('<script src="previews.js"><\/script>');</script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"
+        integrity="sha384-RRHfJ6w1mTlKUBMYT/hvnRiOzEB/vyRV3DrQOseb6oYfvaZSfdd0byS4bHps0k2R"
+        crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+        integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"
+        crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
 <script src="drops.js" defer></script>
 </body>
 </html>

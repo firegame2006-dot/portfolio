@@ -323,7 +323,11 @@ const contacts = [
       var label = document.createElement('a');
       label.className = 'label' + (isContact ? ' label-contact' : '');
       label.href = spec.data.url;
-      if (isProject) { label.target = '_blank'; label.rel = 'noopener noreferrer'; }
+      /* middle-click / ctrl-click should behave the same on every droplet */
+      if (spec.data.url.indexOf('mailto:') !== 0) {
+        label.target = '_blank';
+        label.rel = 'noopener noreferrer';
+      }
       label.innerHTML = '<b>' + esc(drop.title) + '</b><u>' +
         esc(isContact ? spec.data.text : 'Click to visit') + '</u>';
       label.addEventListener('click', function (ev) { ev.preventDefault(); launch(drop); });
@@ -365,7 +369,6 @@ const contacts = [
     }
 
     var contactEl = document.getElementById('contact');
-    var hintEl2 = document.getElementById('contactHint');
     var contactBase, slots;
 
     if (wide) {
@@ -376,8 +379,8 @@ const contacts = [
       slots = [[0.14, 0.14], [0.31, -0.02], [0.20, -0.19]];
     } else {
       /* on a phone they belong under the text, in a clear row of their own */
-      var anchor = hintEl2
-        ? docTop(hintEl2) + hintEl2.offsetHeight + h * 0.24
+      var anchor = hintEl
+        ? docTop(hintEl) + hintEl.offsetHeight + h * 0.24
         : docH * 0.9;
       contactBase = atDoc(anchor, RATE_PINNED);
       slots = [[-0.30, 0.05], [0.00, -0.07], [0.30, 0.05]];
@@ -674,7 +677,6 @@ const contacts = [
 
   /* ---------------- Loop ---------------- */
   var clock = new THREE.Clock();
-  var running = true;
 
 
   document.addEventListener('visibilitychange', function () {
@@ -684,7 +686,7 @@ const contacts = [
   function tick() {
     requestAnimationFrame(tick);
     var dt = Math.min(clock.getDelta(), 0.05);
-    if (!running || document.hidden) return;
+    if (document.hidden) return;
 
     var t = clock.elapsedTime;
 
@@ -753,10 +755,19 @@ const contacts = [
         var sx = (p.x * 0.5 + 0.5) * window.innerWidth;
         var sy = (-p.y * 0.5 + 0.5) * window.innerHeight;
         var below = (d.r / view.h) * window.innerHeight * 1.06;
-        /* keep the caption inside the viewport, whatever the droplet does */
+        /* Keep the caption inside the viewport, whatever the droplet does.
+           The second line is centred on the caption but sits in its own
+           absolutely positioned box, and it is often the wider of the two —
+           so the point the caption is centred on is clamped by whichever
+           line reaches furthest, while the caption itself stays centred on
+           that point rather than being nudged off to one side. */
+        var sub = d.label.lastElementChild;
         var lw = d.label.offsetWidth;
-        var lx = Math.min(Math.max(sx - lw / 2, 6), window.innerWidth - lw - 6);
-        d.label.style.transform = 'translate3d(' + lx + 'px,' + (sy + below) + 'px,0)';
+        var half = Math.max(lw, sub ? sub.offsetWidth : 0) / 2;
+        var cx2 = Math.min(Math.max(sx, half + 6),
+                           Math.max(half + 6, window.innerWidth - half - 6));
+        d.label.style.transform =
+          'translate3d(' + (cx2 - lw / 2) + 'px,' + (sy + below) + 'px,0)';
       }
     }
 

@@ -1,53 +1,37 @@
-# Volodya — 3D droplet portfolio
+# Volodya — web developer portfolio
 
 One page, no build step, no npm. Every project is a 3D water droplet with a live
-preview of the site inside it; clicking a droplet bursts it and opens the real URL.
-Droplets float behind the whole page, not just the hero, and each one answers the
-pointer on its own: the small glass beads scatter away from the cursor, the project
-droplets lean towards it.
+preview of the site inside it; clicking a droplet bursts it and opens the project.
+Droplets float behind the whole page, and each one answers the pointer on its own:
+the small glass beads scatter away from the cursor, the project droplets lean in.
 
-There is no "Selected Work" section — the droplets are the project list. A plain
-text list appears only when WebGL is unavailable, so nothing is unreachable.
+Live: https://portfolions2.netlify.app/
 
-    index.html         the 3D site (main page)
-    drops.css          styling
-    drops.js           Three.js scene, GSAP burst, the projects and contacts arrays
-    previews.js        screenshots inlined as data URIs (generated)
-    make-previews.py   regenerates previews.js from assets/
-    assets/        project screenshots (16:10 webp)
-    favicon.svg    droplet favicon
-    minimal.html   the earlier light minimal design, kept as a backup
-    styles.css     styling for minimal.html
-    script.js      scripting for minimal.html
+## Files
+
+    index.html          the page
+    drops.css           styling
+    drops.js            Three.js scene, GSAP transitions, projects + contacts data
+    previews.js         screenshots inlined as data URIs (only used from file://)
+    make-previews.py    regenerates previews.js from assets/
+    assets/             project screenshots (16:10 WebP) and the social card
+    favicon.svg         droplet mark
+    apple-touch-icon.png
+    robots.txt, sitemap.xml, _headers
 
 ## Run it
 
-Double-clicking `index.html` works: WebGL cannot read textures over `file://`, so
-in that case the page pulls the screenshots from `previews.js`, where they are
-inlined as data URIs. Over http that file is skipped and the textures come from
-`assets/` instead — 200 KB lighter for real visitors. A server is still nicer
-while developing:
-
     python -m http.server 8000
 
-**After changing anything in `assets/`, run:**
-
-    python make-previews.py
-
-## Contacts
-
-The three violet bubbles near the Contact section come from the `contacts` array
-in `drops.js`, right under the projects. Each carries a monogram (E / T / G), so
-they never read as a project droplet:
-
-    const contacts = [
-      { label: "Email", text: "firegame2006@gmail.com", url: "mailto:firegame2006@gmail.com" }
-    ];
+Then http://localhost:8000/. Opening `index.html` by double-click also works:
+WebGL cannot read textures over `file://`, so in that case the page falls back to
+the inlined copies in `previews.js`. Over http that file is skipped and the
+textures come from `assets/` — 200 KB lighter for real visitors.
 
 ## Adding a project
 
-Open `drops.js` — the array at the very top is the only thing you need to touch.
-One entry = one droplet. Anything between 1 and 7 entries looks right.
+The array at the top of `drops.js` is the only thing to edit. One entry = one
+droplet; anything between one and seven looks right.
 
     const projects = [
       {
@@ -58,57 +42,56 @@ One entry = one droplet. Anything between 1 and 7 entries looks right.
       }
     ];
 
-* `image` — a 16:10 screenshot (1600x1000 is ideal), WebP keeps it small.
-  Drop the file into `assets/` and point `image` at it.
-* `url` — the real address; this is what opens after the droplet bursts.
-* Everything else follows automatically: the droplet, its number, its label,
-  and the row in the "Selected Work" list.
+Contacts work the same way through the `contacts` array below it.
 
-Layout, sizes and positions are computed from the number of projects, so nothing
-has to be adjusted by hand. Droplets without a project (the small glass beads)
-fill the composition and are added automatically up to six.
+`image` wants a 16:10 screenshot (1600x1000 is ideal) in `assets/`. After adding
+one, run `python make-previews.py` so the offline copies stay in step. Positions,
+sizes and captions are computed from the number of entries — nothing to adjust by
+hand.
 
-## Taking a screenshot of a site
-
-Headless Chrome, no extra tools:
+Capturing a screenshot without extra tools:
 
     chrome --headless=new --hide-scrollbars --window-size=1600,1000 \
       --virtual-time-budget=9000 --screenshot=shot.png https://example.com/
 
-Then convert to WebP (Python + Pillow):
-
     python -c "from PIL import Image; im=Image.open('shot.png').convert('RGB'); \
       im.save('assets/shot.webp','WEBP',quality=82,method=6)"
 
+## Structure
+
+    hero        MY WORKS and one line — the droplets carry the work
+    services    services list and a small tech line
+    about me
+    contact     three violet bubbles: email, Telegram, GitHub
+
+Fonts: Syne (headings) and Sora (text). A reload always lands at the top —
+`history.scrollRestoration` is set to manual.
+
 ## Dependencies
 
-Two CDN scripts, pinned:
+Two CDN scripts, pinned and checked with Subresource Integrity:
 
-* Three.js 0.149.0 — https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js
-* GSAP 3.12.5 — https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js
+* Three.js 0.149.0 (jsDelivr)
+* GSAP 3.12.5 (cdnjs)
 
-If WebGL is unavailable the droplets are skipped and the page falls back to the
-"Selected Work" list — every project stays reachable.
-
-## Page structure
-
-    hero        MY WORKS + one line, nothing else — the droplets carry the work
-    services    My services + a small tech stack line (appears on scroll)
-    about me
-    contact     three violet bubbles
-
-Fonts are Syne (headings) and Sora (text), loaded from Google Fonts.
-A reload always lands at the top: `history.scrollRestoration` is set to manual.
+If WebGL is unavailable the droplets are skipped and a plain list of the projects
+and contacts appears instead, so nothing is unreachable.
 
 ## Notes
 
-* Rendering pauses when the tab is hidden.
-* Project droplets are only clickable while the hero is on screen.
-* Pixel ratio is capped (2 on desktop, 1.6 on touch) to keep it smooth.
+* Project and contact droplets are pinned to the page, so they stay in their own
+  section; only the small beads keep a parallax.
+* Rendering pauses when the tab is hidden. Pixel ratio is capped at 2 (1.6 on
+  touch screens).
 * Clicking a droplet: it squashes, bursts into particles, then swells out and
-  floods the screen with a drop mark and a filling line, and the URL opens in
-  the same tab. No screenshot is zoomed, so nothing gets cropped on a phone.
-* On a phone the hero puts the words first and the droplets underneath, and
-  the contact bubbles sit in their own row under the contact text.
+  floods the screen with a drop mark and a filling line, and the URL opens in the
+  same tab. Returning with the browser's Back button clears that overlay and puts
+  the droplet back together.
 * `prefers-reduced-motion` turns off the float, the burst and the intro; a click
   then goes straight to the project URL.
+
+## Before deploying elsewhere
+
+The absolute URLs in `index.html` (`canonical`, `og:url`, `og:image`),
+`robots.txt` and `sitemap.xml` point at `portfolions2.netlify.app`. Change them if
+the domain changes.
