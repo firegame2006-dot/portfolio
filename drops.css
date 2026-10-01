@@ -191,6 +191,7 @@ main{ position:relative; z-index:2; }
 /* Contact bubbles: violet, smaller type — never mistaken for a project. */
 .label-contact b{
   font-size:9.5px; letter-spacing:.26em; color:#cdbcff;
+  padding-left:.26em; /* balances the trailing letter-spacing so it centres under the bubble */
   text-shadow:0 2px 14px rgba(0,0,0,.85);
 }
 .label-contact u{ color:#a78bff; letter-spacing:.06em; font-size:10px; text-transform:none; }

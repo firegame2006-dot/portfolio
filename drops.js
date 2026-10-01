@@ -742,8 +742,12 @@ const contacts = [
         by + d.off.y + Math.sin(t * d.speed + d.phase) * d.amp * 2.2,
         d.base.z
       );
-      d.mesh.rotation.y = Math.sin(t * 0.16 + d.phase) * 0.35;
-      d.mesh.rotation.z = Math.cos(t * 0.12 + d.phase) * 0.12;
+      /* the letter in a contact bubble is mapped onto the sphere itself, so
+         turning the sphere would slide it off-centre — contacts stay square */
+      if (d.kind !== 'contact') {
+        d.mesh.rotation.y = Math.sin(t * 0.16 + d.phase) * 0.35;
+        d.mesh.rotation.z = Math.cos(t * 0.12 + d.phase) * 0.12;
+      }
       d.glow.position.copy(d.mesh.position);
 
       if (!busy && loaderDone && !gsap.isTweening(d.mesh.scale)) {
@@ -753,8 +757,13 @@ const contacts = [
       if (d.label) {
         var p = d.mesh.position.clone().add(world.position).project(camera);
         var sx = (p.x * 0.5 + 0.5) * window.innerWidth;
-        var sy = (-p.y * 0.5 + 0.5) * window.innerHeight;
-        var below = (d.r / view.h) * window.innerHeight * 1.06;
+        /* hang the caption off the droplet's actual projected bottom edge,
+           so it rides with the bubble instead of a guessed offset */
+        var foot = d.mesh.position.clone().add(world.position);
+        foot.y -= d.mesh.scale.y * 1.06;
+        foot.project(camera);
+        var sy = (-foot.y * 0.5 + 0.5) * window.innerHeight;
+        var below = 0;
         /* Keep the caption inside the viewport, whatever the droplet does.
            The second line is centred on the caption but sits in its own
            absolutely positioned box, and it is often the wider of the two —
