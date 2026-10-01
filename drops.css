@@ -320,6 +320,7 @@ main{ position:relative; z-index:2; }
   .lead{ max-width:26ch; margin-top:18px; }
   .services-list li{ padding:14px 0 14px 26px; }
   .label b{ font-size:9.5px; letter-spacing:.12em; }
+  .label-contact b{ padding-left:.12em; }
 }
 
 @media (prefers-reduced-motion:reduce){
