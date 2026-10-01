@@ -764,19 +764,23 @@ const contacts = [
         foot.project(camera);
         var sy = (-foot.y * 0.5 + 0.5) * window.innerHeight;
         var below = 0;
-        /* Keep the caption inside the viewport, whatever the droplet does.
-           The second line is centred on the caption but sits in its own
-           absolutely positioned box, and it is often the wider of the two —
-           so the point the caption is centred on is clamped by whichever
-           line reaches furthest, while the caption itself stays centred on
-           that point rather than being nudged off to one side. */
+        /* The caption always stays centred under its droplet. Only the
+           second line (shown on hover, and often much wider — a full GitHub
+           URL) is nudged sideways on its own when it would leave the
+           viewport, so a narrow phone screen never drags the name away
+           from its bubble. */
         var sub = d.label.lastElementChild;
         var lw = d.label.offsetWidth;
-        var half = Math.max(lw, sub ? sub.offsetWidth : 0) / 2;
-        var cx2 = Math.min(Math.max(sx, half + 6),
-                           Math.max(half + 6, window.innerWidth - half - 6));
+        var cx2 = Math.min(Math.max(sx, lw / 2 + 6),
+                           Math.max(lw / 2 + 6, window.innerWidth - lw / 2 - 6));
         d.label.style.transform =
           'translate3d(' + (cx2 - lw / 2) + 'px,' + (sy + below) + 'px,0)';
+        if (sub) {
+          var sh = sub.offsetWidth / 2, nudge = 0;
+          if (cx2 - sh < 6) nudge = 6 - (cx2 - sh);
+          else if (cx2 + sh > window.innerWidth - 6) nudge = (window.innerWidth - 6) - (cx2 + sh);
+          sub.style.transform = 'translateX(calc(-50% + ' + nudge + 'px))';
+        }
       }
     }
 
