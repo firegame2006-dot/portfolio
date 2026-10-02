@@ -372,10 +372,16 @@ const contacts = [
     var contactBase, slots;
 
     if (wide) {
-      /* beside the copy */
-      contactBase = atDoc(contactEl
+      /* beside the copy, centred in the viewport at the scroll position where
+         the contact section is seen. On a tall monitor the page bottoms out
+         before the section can reach mid-screen, so aim at the screen centre
+         at that last reachable scroll instead — otherwise the lowest bubble
+         hangs off the bottom edge. */
+      var mid = contactEl
         ? contactEl.offsetTop + contactEl.offsetHeight * 0.5
-        : docH * 0.82, RATE_PINNED);
+        : docH * 0.82;
+      var seenAt = Math.max(0, Math.min(docH - h, mid - h / 2));
+      contactBase = atDoc(seenAt + h / 2, RATE_PINNED);
       slots = [[0.14, 0.14], [0.31, -0.02], [0.20, -0.19]];
     } else {
       /* on a phone they belong under the text, in a clear row of their own */
